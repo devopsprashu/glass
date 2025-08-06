@@ -8,12 +8,19 @@ terraform {
 }
 
 provider "azurerm" {
-  # Configuration options
   features {}
-  subscription_id = "c64cf66f-900c-4cad-b6cd-ee68a9839e8a"
+  subscription_id = "fadfa500-48fa-4d7d-ae72-215103d56b2f"
 }
 
-resource "azurerm_resource_group" "example" {
-  name     = "example"
+resource "azurerm_resource_group" "parent-rg" {
+  name     = "parent"
   location = "West Europe"
+}
+
+resource "azurerm_storage_account" "childstg" {
+  name                     = "child"
+  resource_group_name      = azurerm_resource_group.parent-rg.name
+  location                 = azurerm_resource_group.parent-rg.location
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
 }
